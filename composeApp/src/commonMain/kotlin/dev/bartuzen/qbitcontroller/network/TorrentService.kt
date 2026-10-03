@@ -291,7 +291,7 @@ class TorrentService(
         ratioLimit: Double,
         seedingTimeLimit: Int,
         inactiveSeedingTimeLimit: Int,
-        shareLimitsMode: String,
+        shareLimitsMode: String?,
         shareLimitAction: String,
     ): Response<Unit> = post(
         "torrents/setShareLimits",
