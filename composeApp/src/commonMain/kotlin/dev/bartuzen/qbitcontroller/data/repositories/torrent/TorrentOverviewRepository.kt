@@ -119,15 +119,20 @@ class TorrentOverviewRepository(
         inactiveSeedingTimeLimit: Int,
         shareLimitsMode: String,
         shareLimitAction: String,
-    ) = requestManager.request(serverId) { service ->
-        service.setShareLimit(
-            hash,
-            ratioLimit,
-            seedingTimeLimit,
-            inactiveSeedingTimeLimit,
-            shareLimitsMode,
-            shareLimitAction,
-        )
+    ) {
+        val version = requestManager.getQBittorrentVersion(serverId)
+        if (version >= QBittorrentVersion(2, 15, 3)) {
+            requestManager.request(serverId) { service ->
+                service.setShareLimit(
+                    hash,
+                    ratioLimit,
+                    seedingTimeLimit,
+                    inactiveSeedingTimeLimit,
+                    shareLimitsMode,
+                    shareLimitAction,
+                )
+            }
+        }
     }
 
     suspend fun exportTorrent(serverId: Int, hash: String, block: suspend (ByteReadChannel) -> Unit) =
