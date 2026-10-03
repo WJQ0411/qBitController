@@ -53,9 +53,6 @@ class TorrentOverviewViewModel(
     private val _isRefreshing = MutableStateFlow(false)
     val isRefreshing = _isRefreshing.asStateFlow()
 
-    private val _isShareLimitsModeSupported = MutableStateFlow(false)
-    val isShareLimitsModeSupported = _isShareLimitsModeSupported.asStateFlow()
-
     val autoRefreshInterval = settingsManager.autoRefreshInterval.flow
 
     private val isScreenActive = MutableStateFlow(false)
@@ -138,7 +135,6 @@ class TorrentOverviewViewModel(
         _torrent.value = torrent
         _torrentProperties.value = properties
         _torrentPieces.value = pieces
-        _isShareLimitsModeSupported.value = repository.isShareLimitsModeSupported(serverId)
 
         notifier.checkCompleted(serverId, torrent)
     }

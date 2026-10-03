@@ -288,7 +288,6 @@ fun TorrentOverviewTab(
 
     val isRefreshing by viewModel.isRefreshing.collectAsStateWithLifecycle()
     val isNaturalLoading by viewModel.isNaturalLoading.collectAsStateWithLifecycle()
-    val isShareLimitsModeSupported by viewModel.isShareLimitsModeSupported.collectAsStateWithLifecycle()
 
     LaunchedEffect(isScreenActive) {
         viewModel.setScreenActive(isScreenActive)
@@ -645,7 +644,6 @@ fun TorrentOverviewTab(
             if (currentTorrent != null) {
                 TorrentOptionsDialog(
                     torrent = currentTorrent,
-                    isShareLimitsModeSupported = isShareLimitsModeSupported,
                     onDismiss = { currentDialog = null },
                     onConfirm = {
                             autoTmm,
@@ -1665,7 +1663,6 @@ private data class ShareLimitsChange(
 @Composable
 fun TorrentOptionsDialog(
     torrent: Torrent,
-    isShareLimitsModeSupported: Boolean,
     onDismiss: () -> Unit,
     onConfirm: (
         autoTmm: Boolean?,
@@ -1991,71 +1988,61 @@ fun TorrentOptionsDialog(
                             enabled = isCustomEnabled,
                         )
 
-                        if (isShareLimitsModeSupported) {
-                            var shareLimitsModeExpanded by rememberSaveable { mutableStateOf(false) }
-                            ExposedDropdownMenuBox(
-                                expanded = shareLimitsModeExpanded,
-                                onExpandedChange = {
-                                    if (isCustomEnabled) {
-                                        shareLimitsModeExpanded = it
-                                    }
-                                },
-                            ) {
-                                OutlinedTextField(
-                                    value = when (selectedShareLimitsMode) {
-                                        "MatchAll" -> stringResource(Res.string.torrent_option_share_limit_mode_match_all)
-                                        else -> stringResource(Res.string.torrent_option_share_limit_mode_match_any)
-                                    },
-                                    onValueChange = {},
-                                    readOnly = true,
-                                    singleLine = true,
-                                    enabled = isCustomEnabled,
-                                    label = {
-                                        Text(
-                                            text = stringResource(Res.string.torrent_option_share_limit_mode),
-                                            maxLines = 1,
-                                            overflow = TextOverflow.Ellipsis,
-                                        )
-                                    },
-                                    trailingIcon = {
-                                        ExposedDropdownMenuDefaults.TrailingIcon(expanded = shareLimitsModeExpanded)
-                                    },
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .menuAnchor(ExposedDropdownMenuAnchorType.PrimaryNotEditable),
-                                )
-
-                                ExposedDropdownMenu(
-                                    expanded = shareLimitsModeExpanded,
-                                    onDismissRequest = { shareLimitsModeExpanded = false },
-                                ) {
-                                    DropdownMenuItem(
-                                        text = {
-                                            Text(
-                                                text = stringResource(
-                                                    Res.string.torrent_option_share_limit_mode_match_any,
-                                                ),
-                                            )
-                                        },
-                                        onClick = {
-                                            selectedShareLimitsMode = "MatchAny"
-                                            shareLimitsModeExpanded = false
-                                        },
-                                    )
-                                    DropdownMenuItem(
-                                        text = {
-                                            Text(
-                                                text = stringResource(
-                                                    Res.string.torrent_option_share_limit_mode_match_all,
-                                                ),
-                                            )
-                                        },
-                                        onClick = {
-                                            selectedShareLimitsMode = "MatchAll"
-                                            shareLimitsModeExpanded = false
-                                        },
-                                    )
+                        var shareLimitsModeExpanded by rememberSaveable { mutableStateOf(false) }
+                        ExposedDropdownMenuBox(
+                            expanded = shareLimitsModeExpanded,
+                            onExpandedChange = {
+                                if (isCustomEnabled) {
+                                    shareLimitsModeExpanded = it
                                 }
+                            },
+                        ) {
+                            OutlinedTextField(
+                                value = when (selectedShareLimitsMode) {
+                                    "MatchAll" -> stringResource(Res.string.torrent_option_share_limit_mode_match_all)
+                                    else -> stringResource(Res.string.torrent_option_share_limit_mode_match_any)
+                                },
+                                onValueChange = {},
+                                readOnly = true,
+                                singleLine = true,
+                                enabled = isCustomEnabled,
+                                label = {
+                                    Text(
+                                        text = stringResource(Res.string.torrent_option_share_limit_mode),
+                                        maxLines = 1,
+                                        overflow = TextOverflow.Ellipsis,
+                                    )
+                                },
+                                trailingIcon = {
+                                    ExposedDropdownMenuDefaults.TrailingIcon(expanded = shareLimitsModeExpanded)
+                                },
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .menuAnchor(ExposedDropdownMenuAnchorType.PrimaryNotEditable),
+                            )
+
+                            ExposedDropdownMenu(
+                                expanded = shareLimitsModeExpanded,
+                                onDismissRequest = { shareLimitsModeExpanded = false },
+                            ) {
+                                DropdownMenuItem(
+                                    text = {
+                                        Text(text = stringResource(Res.string.torrent_option_share_limit_mode_match_any))
+                                    },
+                                    onClick = {
+                                        selectedShareLimitsMode = "MatchAny"
+                                        shareLimitsModeExpanded = false
+                                    },
+                                )
+                                DropdownMenuItem(
+                                    text = {
+                                        Text(text = stringResource(Res.string.torrent_option_share_limit_mode_match_all))
+                                    },
+                                    onClick = {
+                                        selectedShareLimitsMode = "MatchAll"
+                                        shareLimitsModeExpanded = false
+                                    },
+                                )
                             }
                         }
                     }
